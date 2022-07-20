@@ -49,17 +49,18 @@ module.exports = {
                 test: /\.(css|scss|sass)$/,
                 use: [
                     {
-                        loader: "style-loader",
+                        loader: "style-loader"
+                    },
+                    {
+                        loader: "css-loader",
                         options: {
-                            module: true
+                            modules: true
                         }
+                    },
+                    {
+                        loader: "sass-loader"
                     }
-                    , "css-loader", {
-                    loader: "sass-loader",
-                        options: {
-                        module: true
-                        }
-                    }]
+                ]
             }
         ]
     }

@@ -8,27 +8,31 @@ interface IProps {
 class TodoList extends React.Component<IProps, {}>{
     constructor(props: IProps) {
         super(props);
-
-        this.state = {}
     }
 
     render() {
         return (
-            <div>
-                {
-                    this.props.todo.map((item, index) => (
-                        <div className={style.todo} key={item.id}>
-                            <div>{index + 1}</div>
-                            <div>{item.name}</div>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    checked={item.line}
-                                />
+            <div className={style.todo}>
+                <div className={style.todo__container}>
+                    {
+                        this.props.todo.map((item, index) => (
+                            <div className={style.todo__item} key={item.id}>
+                                <div style={{width: '100%'}}>{index + 1}</div>
+                                <div style={{width: '100%'}}>{item.name}</div>
+                                <div style={{width: '100%'}}>
+                                    <button className={style.todo__btn}>&times;</button>
+                                </div>
+                                <div style={{width: '100%'}}>
+                                    <input
+                                        className={style.todo__checkbox}
+                                        type="checkbox"
+                                        checked={item.line}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    ))
-                }
+                        ))
+                    }
+                </div>
             </div>
         )
     }

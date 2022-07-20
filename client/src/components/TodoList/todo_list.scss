@@ -1,5 +1,45 @@
-.todo {
+@mixin flex($type) {
   display: flex;
-  justify-content: space-between;
+  justify-content: $type;
   align-items: center;
+}
+
+.todo {
+  @include flex(center);
+
+  .todo__container {
+    //@include flex;
+    width: 70%;
+    max-width: 1440px;
+
+    .todo__item {
+      @include flex(space-between);
+      width: 100%;
+      color: white;
+      font-size: 20px;
+      border: 1px solid white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      max-width: 1440px;
+      text-align: center;
+
+      .todo__checkbox {
+        width: 25px;
+        height: 25px;
+        accent-color: blue;
+        cursor: pointer;
+      }
+
+      .todo__btn {
+        width: 25px;
+        height: 25px;
+        accent-color: blue;
+        color: #ffffff;
+        border: none;
+        background-color: red;
+        cursor: pointer;
+      }
+    }
+  }
 }
