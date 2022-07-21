@@ -1,6 +1,7 @@
 import {Module} from "@nestjs/common";
 import {ConfigModule} from "@nestjs/config";
 import { TodoModule } from './todo/todo.module';
+import {MongooseModule} from "@nestjs/mongoose";
 @Module({
     providers: [],
     controllers: [],
@@ -8,6 +9,7 @@ import { TodoModule } from './todo/todo.module';
         ConfigModule.forRoot({
             envFilePath: '.env'
         }),
+        MongooseModule.forRoot(process.env.MONGO),
         TodoModule
     ]
 })
