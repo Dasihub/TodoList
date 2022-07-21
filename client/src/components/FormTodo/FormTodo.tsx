@@ -5,8 +5,12 @@ interface IState {
     value: string
 }
 
-class FormTodo extends React.Component<{}, IState>{
-    constructor(props: {}) {
+interface IProps {
+    addTodo: (value: string) => void
+}
+
+class FormTodo extends React.Component<IProps, IState>{
+    constructor(props: IProps) {
         super(props);
         this.state = {
             value: ''
@@ -15,6 +19,14 @@ class FormTodo extends React.Component<{}, IState>{
 
     change(e: React.ChangeEvent<HTMLInputElement>)  {
         this.setState({value: e.target.value})
+    }
+
+    click(e: React.FormEvent) {
+        e.preventDefault()
+        if (this.state.value.length) {
+            this.props.addTodo(this.state.value)
+            this.setState({value: ''})
+        }
     }
 
     render() {
@@ -27,6 +39,7 @@ class FormTodo extends React.Component<{}, IState>{
                 />
                 <button
                     className={style.form__btn}
+                    onClick={this.click.bind(this)}
                 >Добавить</button>
             </form>
         )
