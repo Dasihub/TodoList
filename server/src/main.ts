@@ -5,7 +5,9 @@ async function bootstrap() {
     try {
         const PORT = process.env.PORT
 
-        const app = await NestFactory.create(AppModule)
+        const app = await NestFactory.create(AppModule, {cors: true})
+        app.setGlobalPrefix('api')
+
         await app.listen(PORT, () => console.log(`Start server in port ${PORT}`))
     } catch (e) {
         console.log(e)

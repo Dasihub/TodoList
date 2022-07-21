@@ -1,33 +1,48 @@
 import { Injectable } from '@nestjs/common';
 import {CreateTodoDto} from "./dto/create-todo.dto";
-
-type typeTodo = {name: string, line: false, id: number}
+import {InjectModel} from "@nestjs/mongoose";
+import {Todo, TodoDocument} from "./schema/todo.schema";
+import {Model} from "mongoose";
+import {UpdateTodoDto} from "./dto/update-todo.dto";
 
 @Injectable()
 export class TodoService {
-    private todo: typeTodo[] = [
-        {name: 'Dosya', line: false, id: 1},
-        {name: 'Mk', line: false, id: 2},
-    ]
+    constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {
+    }
 
     async getAllTodo() {
-        return this.todo
+        const todos = await this.todoModel.find().exec()
+        return {
+            message: 'Данные успешно получены',
+            type: 'success',
+            data: todos
+        }
     }
 
     async createTodo(value: CreateTodoDto) {
-        const newTodo: typeTodo = {name: value.name, line: false, id: Date.now()}
-        this.todo.push(newTodo)
-        return newTodo
+        const newTodo = new this.todoModel({name: value.name, line: false})
+        return {
+            message: 'Данные успешно добавлены',
+            type: 'success',
+            data: newTodo.save()
+        }
     }
 
-    async changeTodo(id: number) {
-        const t: any = this.todo.map(item => item.id == id ? {...item, line: !item.line} : item)
-        this.todo = t
-        return this.todo
+    async changeTodo(todoDto: UpdateTodoDto) {
+        const result = await this.todoModel.updateOne({_id: todoDto._id}, {line: todoDto.line})
+        return {
+            message: 'Данные успешно обновлены',
+            type: 'success',
+            data: result
+        }
     }
 
-    async delete(id: number) {
-        this.todo = this.todo.filter(item => item.id != id)
-        return this.todo
+    async delete(_id: number) {
+        const result = await this.todoModel.deleteOne({_id})
+        return {
+            message: 'Данные успешно удалено',
+            type: 'success',
+            data: result
+        }
     }
 }

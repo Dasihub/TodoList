@@ -1,51 +1,85 @@
 import React from "react";
-import {FormTodo, TodoList} from "./components";
+import {ToastContainer} from 'react-toastify'
+import {FormTodo, Loader, TodoList} from "./components";
+import {http} from "./config/http";
 
-interface IState {
-    todo: {name: string, line: boolean, id: number}[]
+type todo = {
+    name: string,
+    line: boolean,
+    _id: number
 }
 
-class App extends React.Component<{}, IState>{
+interface IRes {
+    data: todo[]
+}
+
+interface IState {
+    todo: todo[]
+    loader: boolean
+}
+
+class App extends React.Component<{}, IState> {
     constructor(props: {}) {
         super(props);
 
         this.state = {
-            todo: [
-                {name: 'Dosya', line: false, id: 1},
-                {name: 'Ravil', line: true, id: 2},
-                {name: 'Mk', line: false, id: 3}
-            ]
+            todo: [],
+            loader: false
+        }
+    }
+
+    componentDidMount() {
+        this.getAllTodo()
+    }
+
+    async getAllTodo(): Promise<void> {
+        try {
+            if (!this.state.loader) {
+                this.setState({loader: true})
+            }
+            const res: IRes = await http('/todo')
+            this.setState({todo: res.data, loader: false})
+        } catch (e) {
         }
     }
 
     addTodo = async (value: string): Promise<void> => {
-        const newTodo: {name: string, line: boolean, id: number} = {
-            name: value,
-            id: Date.now(),
-            line: false
+        try {
+            this.setState({loader: true})
+            await http('/todo', 'POST', {name: value})
+            this.getAllTodo()
+        } catch (e) {
         }
-        this.setState({todo: [...this.state.todo, newTodo]})
     }
 
-    changeTodo = async (id: number): Promise<void> => {
-        this.setState({todo: this.state.todo.map(item => item.id == id ? {...item, line: !item.line} : item)})
+    changeTodo = async (_id: number, line: boolean): Promise<void> => {
+        this.setState({loader: true})
+        await http('/todo', 'PUT', {_id, line: !line})
+        this.getAllTodo()
     }
 
-    deleteTodo = async (id: number): Promise<void> => {
-        this.setState({todo: this.state.todo.filter(item => item.id != id)})
+    deleteTodo = async (_id: number): Promise<void> => {
+        this.setState({loader: true})
+        await http(`/todo/${_id}`, 'DELETE')
+        this.getAllTodo()
     }
 
     render() {
         return (
             <>
+                <ToastContainer/>
                 <FormTodo
                     addTodo={this.addTodo}
                 />
-                <TodoList
-                    todo={this.state.todo}
-                    changeTodo={this.changeTodo}
-                    deleteTodo={this.deleteTodo}
-                />
+                {
+                    this.state.loader ?
+                        <Loader/> :
+                        <TodoList
+                            todo={this.state.todo}
+                            changeTodo={this.changeTodo}
+                            deleteTodo={this.deleteTodo}
+                        />
+                }
             </>
         )
     }
