@@ -32,7 +32,7 @@ class App extends React.Component<{}, IState>{
     }
 
     deleteTodo = async (id: number): Promise<void> => {
-        this.setState({todo: this.state.todo.filter(item => item.id !== id)})
+        this.setState({todo: this.state.todo.filter(item => item.id != id)})
     }
 
     render() {

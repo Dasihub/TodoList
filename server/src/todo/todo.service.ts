@@ -27,9 +27,7 @@ export class TodoService {
     }
 
     async delete(id: number) {
-        console.log(id)
-        const rmTodo = this.todo.filter(item => item.id !== id)
-        this.todo = rmTodo
-        return rmTodo
+        this.todo = this.todo.filter(item => item.id != id)
+        return this.todo
     }
 }
